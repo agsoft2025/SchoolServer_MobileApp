@@ -31,7 +31,7 @@ export default function LanguagePicker({ compact = false }: LanguagePickerProps)
         onPress={() => setOpen(true)}
       >
         <Text style={[styles.buttonText, compact && styles.buttonTextCompact]}>
-          {t("language")}
+          🌐 {t("language")}
         </Text>
       </TouchableOpacity>
 
@@ -66,13 +66,12 @@ export default function LanguagePicker({ compact = false }: LanguagePickerProps)
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#f0f1ff",
-    borderColor: "#40407a",
-    borderWidth: 1,
+    backgroundColor: "#007AFF",
     borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    alignSelf: "flex-end",
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    minWidth: 100,
+    minHeight: 44,
   },
   buttonCompact: {
     backgroundColor: "transparent",
@@ -81,8 +80,9 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
   },
   buttonText: {
-    color: "#40407a",
+    color: "#fff",
     fontWeight: "600",
+    fontSize: 14,
   },
   buttonTextCompact: {
     color: "#fff",

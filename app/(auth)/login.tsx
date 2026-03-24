@@ -216,7 +216,9 @@ export default function LoginScreen() {
     <View style={styles.container}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.innerContainer}>
-        <LanguagePicker />
+        <View style={styles.languagePickerContainer}>
+          <LanguagePicker />
+        </View>
         <Text style={styles.title}>{t("welcome_school")}</Text>
 
         {!isSchoolSelected ? (
@@ -314,6 +316,11 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+  },
+  languagePickerContainer: {
+    width: "100%",
+    alignItems: "flex-end",
+    marginBottom: 15,
   },
   title: {
     fontSize: 28,

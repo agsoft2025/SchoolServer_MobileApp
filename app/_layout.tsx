@@ -5,6 +5,7 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['Unsupported top level event type "topSvgLayout"']);
 
 // The rest of your imports...
+import { I18nProvider, useI18n } from "@/i18n/I18nProvider";
 import { Stack, useRouter } from "expo-router";
 import * as SecureStore from 'expo-secure-store';
 import { useEffect, useState } from 'react';
@@ -12,7 +13,6 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { Text, View } from 'react-native';
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
-import { I18nProvider, useI18n } from "@/i18n/I18nProvider";
 
 // Rest of your file remains the same...
 
@@ -78,7 +78,7 @@ export default function RootLayout() {
             <Stack.Screen name="otp" />
             <Stack.Screen name="(auth)/login" />
             <Stack.Screen name="subscription" />
-            <Stack.Screen name="faceCapture" />
+            {/* <Stack.Screen name="faceCapture" /> */}
           </Stack>
           <Toast />
         </SafeAreaProvider>
