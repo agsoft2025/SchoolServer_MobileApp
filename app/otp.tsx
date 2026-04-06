@@ -42,9 +42,11 @@ export default function OtpScreen() {
     const res = await loginWithOtp(registerNo || "", enteredOtp);
 
     if (res?.user) {
-      await SecureStore.setItemAsync("authToken", res.token);
       await SecureStore.setItemAsync("register_no", registerNo || "");
       await SecureStore.setItemAsync("studentId", res?.user?.id);
+      if (res?.token) {
+        await SecureStore.setItemAsync("authToken", String(res.token));
+      }
       await SecureStore.setItemAsync("subscription", res.user.subscription ? "true" : "false");
 
       if (res.user.subscription) {

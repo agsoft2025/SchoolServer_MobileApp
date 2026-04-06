@@ -1,6 +1,7 @@
 // app/(tabs)/_layout.tsx
 import LanguagePicker from "@/components/LanguagePicker";
 import { useI18n } from "@/i18n/I18nProvider";
+import { clearStoredSession, getSession, logoutUser } from "@/services/authService";
 import { Tabs, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { CreditCard, History, LogOut, User } from "lucide-react-native";
@@ -18,15 +19,22 @@ export default function TabLayout() {
 useEffect(() => {
   const checkAuth = async () => {
     try {
-      const token = await SecureStore.getItemAsync("authToken");
       const regNo = await SecureStore.getItemAsync("register_no");
 
-      if (!token || !regNo) {
+      if (!regNo) {
         router.replace({ pathname: "/(auth)/login" });
         return;
       }
 
-    } catch (error) {
+      const session = await getSession();
+      if (!session?.user) {
+        await clearStoredSession();
+        router.replace({ pathname: "/(auth)/login" });
+        return;
+      }
+
+    } catch {
+      await clearStoredSession();
       router.replace({ pathname: "/(auth)/login" });
     } finally {
       setLoading(false);
@@ -34,14 +42,14 @@ useEffect(() => {
   };
 
   checkAuth();
-}, []);
+}, [router]);
 
 const handleLogout = async () => {
-  await SecureStore.deleteItemAsync("authToken");
-  await SecureStore.deleteItemAsync("register_no");
-  await SecureStore.deleteItemAsync("studentId");
-  await SecureStore.deleteItemAsync("subscription");
-  await SecureStore.deleteItemAsync("baseUrl");
+  try {
+    await logoutUser();
+  } finally {
+    await clearStoredSession();
+  }
   router.replace({ pathname: "/(auth)/login" });
 };
 

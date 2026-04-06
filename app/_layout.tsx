@@ -1,20 +1,14 @@
-// Add this at the top of your file, after the imports
-import { LogBox } from 'react-native';
-
-// Add this right after your imports
-LogBox.ignoreLogs(['Unsupported top level event type "topSvgLayout"']);
-
-// The rest of your imports...
 import { I18nProvider, useI18n } from "@/i18n/I18nProvider";
+import { clearStoredSession, getSession } from "@/services/authService";
 import { Stack, useRouter } from "expo-router";
-import * as SecureStore from 'expo-secure-store';
-import { useEffect, useState } from 'react';
-import { ErrorBoundary } from 'react-error-boundary';
-import { Text, View } from 'react-native';
+import * as SecureStore from "expo-secure-store";
+import { useEffect } from "react";
+import { ErrorBoundary } from "react-error-boundary";
+import { LogBox, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 
-// Rest of your file remains the same...
+LogBox.ignoreLogs(['Unsupported top level event type "topSvgLayout"']);
 
 // Error boundary fallback component
 function ErrorFallback({ error }: { error: Error }) {
@@ -29,44 +23,37 @@ function ErrorFallback({ error }: { error: Error }) {
 }
 
 export default function RootLayout() {
-  const [isLoading, setIsLoading] = useState(true);
-  const [isReady, setIsReady] = useState(false);
   const router = useRouter();
 
-  // Check auth status when the component mounts and navigation is ready
-  // In _layout.tsx, update the useEffect hook like this:
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const [token, registerNo] = await Promise.all([
-          SecureStore.getItemAsync("authToken"),
-          SecureStore.getItemAsync("register_no")
+        const [registerNo, baseUrl] = await Promise.all([
+          SecureStore.getItemAsync("register_no"),
+          SecureStore.getItemAsync("baseUrl"),
         ]);
 
-        if (token && registerNo) {
+        if (!registerNo || !baseUrl) {
+          router.replace("/(auth)/login");
+          return;
+        }
+
+        const session = await getSession();
+        if (session?.user) {
           router.replace("/(tabs)/profile");
         } else {
+          await clearStoredSession();
           router.replace("/(auth)/login");
         }
       } catch (error) {
         console.error('Auth check error:', error);
+        await clearStoredSession();
         router.replace("/(auth)/login");
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    // Remove the outer setTimeout and call checkAuth directly
     checkAuth();
-  }, []);
-
-  // if (isLoading) {
-  //   return (
-  //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-  //       <ActivityIndicator size="large" color="#40407a" />
-  //     </View>
-  //   );
-  // }
+  }, [router]);
 
   return (
     <I18nProvider>

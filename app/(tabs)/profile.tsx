@@ -102,25 +102,7 @@ export default function HomeScreen() {
             {t("mother")}: {data.mother_name}
           </Text>
           <Text>
-            {t("date_of_birth")}: {new Date(data.date_of_birth).toLocaleDateString()}
-          </Text>
-          <Text>
-            {t("birth_place")}: {data.birth_place}
-          </Text>
-          <Text>
-            {t("blood_group")}: {data.blood_group}
-          </Text>
-          <Text>
             {t("contact")}: {data.contact_number}
-          </Text>
-          <Text>
-            {t("nationality")}: {data.nationality}
-          </Text>
-          <Text>
-            {t("religion")}: {data.religion}
-          </Text>
-          <Text>
-            {t("mother_tongue")}: {data.mother_tongue}
           </Text>
 
           <View style={styles.subCard}>

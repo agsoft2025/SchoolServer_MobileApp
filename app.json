@@ -14,7 +14,6 @@
               "backgroundImage": "./assets/images/android-icon-background.png",
               "monochromeImage": "./assets/images/android-icon-monochrome.png"
             },
-            "newArchEnabled": true,
             "minSdkVersion": 28
           },
           "ios": {
@@ -45,7 +44,16 @@
       "bundleIdentifier": "com.nishanthsekar.schoolmanagementmobileapp2",
       "buildNumber": "2",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "LSApplicationQueriesSchemes": [
+          "razorpay",
+          "upi",
+          "phonepe",
+          "paytmmp",
+          "gpay"
+        ],
+        "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to upload student images.",
+        "NSCameraUsageDescription": "This app uses the camera to capture student photos."
       }
     },
     "runtimeVersion": "1.0.0",
@@ -53,7 +61,7 @@
       "eas": {
         "projectId": "c4165589-4248-4155-9ec0-8c6bc8c958fe"
       },
-      "apiUrl": "https://schoolglobalserver-agsoft.onrender.com",
+      "apiUrl": "https://schoolglobalserver-be.onrender.com",
       "razorpayKeyId": "rzp_live_Rt5vLcnxGaTs8Y"
     }
   }

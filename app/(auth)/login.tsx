@@ -68,8 +68,10 @@ export default function LoginScreen() {
 
   const debouncedSearch = useCallback(
     debounce(async (text: string) => {
+      console.log("text",text)
       try {
         const res = await searchLocation(text);
+        console.log(res)
 
         const list = res?.data ?? res ?? [];
         if (mountedRef.current) {
@@ -77,6 +79,7 @@ export default function LoginScreen() {
           else setSchools([]);
         }
       } catch (err) {
+        console.log(err)
         if (mountedRef.current) setSchools([]);
       }
     }, 500),
@@ -94,7 +97,8 @@ export default function LoginScreen() {
   };
 
   const handleSelectSchool = async (school: School) => {
-    const baseUrl = (school.baseUrl || "").trim();
+    const baseUrl = (school.baseUrl || "").trim();   
+     
 
     if (!baseUrl) {
       Toast.show({
@@ -185,6 +189,9 @@ export default function LoginScreen() {
 
       await SecureStore.setItemAsync("register_no", String(reg));
       await SecureStore.setItemAsync("studentId", String(studentId));
+      if (res?.token) {
+        await SecureStore.setItemAsync("authToken", String(res.token));
+      }
 
       // ✅ subscription could be boolean or 0/1 or string
       const subscribed =

@@ -11,7 +11,11 @@
       }
     },
     "preview": {
-      "android": { "buildType": "apk" }
+      "android": { "buildType": "apk" },
+      "ios": {
+        "autoIncrement": true,
+        "distribution": "store"
+      }
     },
     "production": {
       "android": { "buildType": "apk" },
@@ -20,5 +24,9 @@
         "distribution": "store"
       }
     }
+  },
+  "submit": {
+    "preview": {},
+    "production": {}
   }
 }

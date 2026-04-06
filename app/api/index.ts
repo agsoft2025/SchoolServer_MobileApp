@@ -1,4 +1,3 @@
-// Re-export everything from axiosInstance
-export * from './axiosinstance';
-export { default } from './axiosinstance';
+export { api } from "./axiosinstance";
+export { default } from "./axiosinstance";
 

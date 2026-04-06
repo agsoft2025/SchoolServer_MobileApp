@@ -1,7 +1,4 @@
-// app/services/studentService.ts
-
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
 import { getBaseUrl, loadBaseUrl } from "../api/apiConfig";
 
@@ -20,7 +17,6 @@ const handleApiError = (error: any, context: string) => {
     message = `Unexpected error while fetching ${context}`;
   }
 
-  // 💥 Show the toast!
   Toast.show({
     type: "error",
     text1: "Error",
@@ -31,45 +27,38 @@ const handleApiError = (error: any, context: string) => {
   throw new Error(message);
 };
 
-
 export const getStudentProfile = async (regNo: string) => {
   if (!regNo) {
     return;
   }
+
   try {
-    const check = await loadBaseUrl();
-    const baseUrl = await getBaseUrl().trim();
-    
-    const token = await SecureStore.getItemAsync("authToken");
+    await loadBaseUrl();
+    const baseUrl = getBaseUrl().trim();
     const url = `${baseUrl}/student/profile/${regNo}`;
-
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    const response = await axios.get(url, { headers });
-
+    const response = await axios.get(url, { withCredentials: true });
     return response.data;
   } catch (error: any) {
     handleApiError(error, "Student Profile");
-    throw error; // ✅ This ensures the caller gets an exception
+    throw error;
   }
 };
-
 
 export const getStudentTransactions = async (
   regNo: string,
   page = 1,
   pageSize = 10
 ) => {
-  if(!regNo){
+  if (!regNo) {
     return;
-}
-  try {
-    const baseUrl = getBaseUrl().trim();
-    const token = await SecureStore.getItemAsync("authToken");
-    const url = `${baseUrl}/student/student-transaction/${regNo}`;
+  }
 
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+  try {
+    await loadBaseUrl();
+    const baseUrl = getBaseUrl().trim();
+    const url = `${baseUrl}/student/student-transaction/${regNo}`;
     const response = await axios.get(url, {
-      headers,
+      withCredentials: true,
       params: { page, pageSize },
     });
 
