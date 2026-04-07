@@ -68,7 +68,6 @@ export default function LoginScreen() {
 
   const debouncedSearch = useCallback(
     debounce(async (text: string) => {
-      console.log("text",text)
       try {
         const res = await searchLocation(text);
         console.log(res)
@@ -97,8 +96,8 @@ export default function LoginScreen() {
   };
 
   const handleSelectSchool = async (school: School) => {
-    const baseUrl = (school.baseUrl || "").trim();   
-     
+    const baseUrl = (school.baseUrl || "").trim();
+
 
     if (!baseUrl) {
       Toast.show({
@@ -162,7 +161,6 @@ export default function LoginScreen() {
       setLoading(true);
 
       const res = await loginUser(reg);
-      console.log("LOGIN RESPONSE:", JSON.stringify(res, null, 2));
 
       const user = res?.user;
       if (!user) {
