@@ -22,8 +22,9 @@ function ErrorFallback({ error }: { error: Error }) {
   );
 }
 
-export default function RootLayout() {
+function RootNavigator() {
   const router = useRouter();
+  const { t } = useI18n();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -46,7 +47,7 @@ export default function RootLayout() {
           router.replace("/(auth)/login");
         }
       } catch (error) {
-        console.error('Auth check error:', error);
+        console.error("Auth check error:", error);
         await clearStoredSession();
         router.replace("/(auth)/login");
       }
@@ -56,20 +57,31 @@ export default function RootLayout() {
   }, [router]);
 
   return (
+    <ErrorBoundary
+      FallbackComponent={ErrorFallback}
+      onError={(error) => {
+        console.error(t("app_error_title"), error);
+      }}
+    >
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="otp" />
+          <Stack.Screen name="(auth)/login" />
+          <Stack.Screen name="subscription" />
+          {/* <Stack.Screen name="faceCapture" /> */}
+        </Stack>
+        <Toast />
+      </SafeAreaProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default function RootLayout() {
+  return (
     <I18nProvider>
-      <ErrorBoundary FallbackComponent={ErrorFallback}>
-        <SafeAreaProvider>
-          <Stack screenOptions={{ headerShown: false }}>
-            <Stack.Screen name="index" />
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="otp" />
-            <Stack.Screen name="(auth)/login" />
-            <Stack.Screen name="subscription" />
-            {/* <Stack.Screen name="faceCapture" /> */}
-          </Stack>
-          <Toast />
-        </SafeAreaProvider>
-      </ErrorBoundary>
+      <RootNavigator />
     </I18nProvider>
   );
 }
