@@ -1,6 +1,6 @@
 import { I18nProvider, useI18n } from "@/i18n/I18nProvider";
 import { clearStoredSession, getSession } from "@/services/authService";
-import { Stack, useRouter } from "expo-router";
+import { Stack, useRootNavigationState, useRouter } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
@@ -25,8 +25,11 @@ function ErrorFallback({ error }: { error: Error }) {
 function RootNavigator() {
   const router = useRouter();
   const { t } = useI18n();
+  const rootNavigationState = useRootNavigationState();
 
   useEffect(() => {
+    if (!rootNavigationState?.key) return; // Wait until navigation is fully mounted
+
     const checkAuth = async () => {
       try {
         const [registerNo, baseUrl] = await Promise.all([
@@ -49,12 +52,12 @@ function RootNavigator() {
       } catch (error) {
         console.error("Auth check error:", error);
         await clearStoredSession();
-        router.replace("/(auth)/login");
+        try { router.replace("/(auth)/login"); } catch (e) {}
       }
     };
 
     checkAuth();
-  }, [router]);
+  }, [router, rootNavigationState?.key]);
 
   return (
     <ErrorBoundary
