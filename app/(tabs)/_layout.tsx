@@ -1,9 +1,9 @@
 // app/(tabs)/_layout.tsx
 import LanguagePicker from "@/components/LanguagePicker";
 import { useI18n } from "@/i18n/I18nProvider";
-import { clearStoredSession, getSession, logoutUser } from "@/services/authService";
+import { clearStoredSession, logoutUser } from "@/services/authService";
+import * as storage from "@/utils/secureStorage";
 import { Tabs, useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { CreditCard, History, LogOut, User } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { ActivityIndicator, TouchableOpacity, View } from "react-native";
@@ -19,20 +19,21 @@ export default function TabLayout() {
 useEffect(() => {
   const checkAuth = async () => {
     try {
-      const regNo = await SecureStore.getItemAsync("register_no");
+      const [regNo, authToken, subscription] = await Promise.all([
+        storage.getItemAsync("register_no"),
+        storage.getItemAsync("authToken"),
+        storage.getItemAsync("subscription"),
+      ]);
 
-      if (!regNo) {
+      if (!regNo || !authToken) {
         router.replace({ pathname: "/(auth)/login" });
         return;
       }
 
-      const session = await getSession();
-      if (!session?.user) {
-        await clearStoredSession();
-        router.replace({ pathname: "/(auth)/login" });
+      if (subscription !== "true") {
+        router.replace({ pathname: "/subscription" });
         return;
       }
-
     } catch {
       await clearStoredSession();
       router.replace({ pathname: "/(auth)/login" });

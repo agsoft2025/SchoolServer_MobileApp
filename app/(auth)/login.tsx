@@ -2,8 +2,8 @@ import { loadBaseUrl, setBaseUrl } from "@/api/apiConfig";
 import LanguagePicker from "@/components/LanguagePicker";
 import { useI18n } from "@/i18n/I18nProvider";
 import { loginUser, searchLocation } from "@/services/authService";
+import * as storage from "@/utils/secureStorage";
 import { Stack, useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   FlatList,
@@ -30,7 +30,7 @@ function debounce<F extends (...args: any[]) => any>(func: F, delay: number) {
     timeout = setTimeout(() => func(...args), delay);
   };
 }
-
+let loginInitDone = false;
 export default function LoginScreen() {
   const router = useRouter();
   const { t } = useI18n();
@@ -53,16 +53,19 @@ export default function LoginScreen() {
     };
   }, []);
 
-  useEffect(() => {
+
+useEffect(() => {
+    if (loginInitDone) return;
+    loginInitDone = true;
+
     const initialize = async () => {
       try {
         const savedUrl = await loadBaseUrl();
-        // optional: you can restore previously selected school based on savedUrl
-        console.log("Saved baseUrl:", savedUrl);
       } catch (error) {
         console.log("Failed to load base URL:", error);
       }
     };
+
     initialize();
   }, []);
 
@@ -111,11 +114,11 @@ export default function LoginScreen() {
 
     try {
       await setBaseUrl(baseUrl);
-      await SecureStore.setItemAsync("baseUrl", baseUrl);
+      await storage.setItemAsync("baseUrl", baseUrl);
 
       // ✅ safe store amount
       const amt = Number(school.amount);
-      await SecureStore.setItemAsync(
+      await storage.setItemAsync(
         "subscriptionAmount",
         String(Number.isFinite(amt) ? amt : 0)
       );
@@ -185,10 +188,10 @@ export default function LoginScreen() {
         return;
       }
 
-      await SecureStore.setItemAsync("register_no", String(reg));
-      await SecureStore.setItemAsync("studentId", String(studentId));
+      await storage.setItemAsync("register_no", String(reg));
+      await storage.setItemAsync("studentId", String(studentId));
       if (res?.token) {
-        await SecureStore.setItemAsync("authToken", String(res.token));
+        await storage.setItemAsync("authToken", String(res.token));
       }
 
       // ✅ subscription could be boolean or 0/1 or string

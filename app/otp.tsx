@@ -1,7 +1,7 @@
 import { useI18n } from "@/i18n/I18nProvider";
 import { loginWithOtp } from "@/services/authService";
+import * as storage from "@/utils/secureStorage";
 import { Stack, useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Toast from "react-native-toast-message";
@@ -15,7 +15,7 @@ export default function OtpScreen() {
 
   useEffect(() => {
     const loadRegisterNo = async () => {
-      const regNo = await SecureStore.getItemAsync("register_no");
+      const regNo = await storage.getItemAsync("register_no");
       setRegisterNo(regNo);
     };
     loadRegisterNo();
@@ -42,12 +42,12 @@ export default function OtpScreen() {
     const res = await loginWithOtp(registerNo || "", enteredOtp);
 
     if (res?.user) {
-      await SecureStore.setItemAsync("register_no", registerNo || "");
-      await SecureStore.setItemAsync("studentId", res?.user?.id);
+      await storage.setItemAsync("register_no", registerNo || "");
+      await storage.setItemAsync("studentId", String(res?.user?.id ?? ""));
       if (res?.token) {
-        await SecureStore.setItemAsync("authToken", String(res.token));
+        await storage.setItemAsync("authToken", String(res.token));
       }
-      await SecureStore.setItemAsync("subscription", res.user.subscription ? "true" : "false");
+      await storage.setItemAsync("subscription", res.user.subscription ? "true" : "false");
 
       if (res.user.subscription) {
         router.replace("/(tabs)/profile");

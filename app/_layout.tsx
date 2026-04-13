@@ -1,7 +1,7 @@
 import { I18nProvider, useI18n } from "@/i18n/I18nProvider";
-import { clearStoredSession, getSession } from "@/services/authService";
+import { clearStoredSession } from "@/services/authService";
+import * as storage from "@/utils/secureStorage";
 import { Stack, useRootNavigationState, useRouter } from "expo-router";
-import * as SecureStore from "expo-secure-store";
 import { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { LogBox, Text, View } from "react-native";
@@ -32,9 +32,11 @@ function RootNavigator() {
 
     const checkAuth = async () => {
       try {
-        const [registerNo, baseUrl] = await Promise.all([
-          SecureStore.getItemAsync("register_no"),
-          SecureStore.getItemAsync("baseUrl"),
+        const [registerNo, baseUrl, authToken, subscription] = await Promise.all([
+          storage.getItemAsync("register_no"),
+          storage.getItemAsync("baseUrl"),
+          storage.getItemAsync("authToken"),
+          storage.getItemAsync("subscription"),
         ]);
 
         if (!registerNo || !baseUrl) {
@@ -42,12 +44,15 @@ function RootNavigator() {
           return;
         }
 
-        const session = await getSession();
-        if (session?.user) {
+        if (!authToken) {
+          router.replace("/otp");
+          return;
+        }
+
+        if (subscription === "true") {
           router.replace("/(tabs)/profile");
         } else {
-          await clearStoredSession();
-          router.replace("/(auth)/login");
+          router.replace("/subscription");
         }
       } catch (error) {
         console.error("Auth check error:", error);

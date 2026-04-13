@@ -1,8 +1,8 @@
 import { useI18n } from "@/i18n/I18nProvider";
 import { getStudentProfile } from "@/services/studentProfile";
+import * as storage from "@/utils/secureStorage";
 import { BASE_URL } from "@/utils/config";
 import { useFocusEffect } from "@react-navigation/native";
-import * as SecureStore from "expo-secure-store";
 import { useCallback, useEffect, useState } from "react";
 import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -16,7 +16,7 @@ export default function HomeScreen() {
   const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
-      const regNo = await SecureStore.getItemAsync("register_no");
+      const regNo = await storage.getItemAsync("register_no");
       if (!regNo) {
         setLoading(false);
         return;
