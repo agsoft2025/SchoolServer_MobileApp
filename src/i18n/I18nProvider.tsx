@@ -1,5 +1,5 @@
-import * as SecureStore from "expo-secure-store";
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import * as storage from "../utils/secureStorage";
 import { LANGUAGE_OPTIONS, LanguageCode, TranslationKey, translations } from "./translations";
 
 type Params = Record<string, string | number>;
@@ -29,7 +29,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const loadSavedLanguage = async () => {
       try {
-        const saved = await SecureStore.getItemAsync(STORAGE_KEY);
+        const saved = await storage.getItemAsync(STORAGE_KEY);
         if (saved && LANGUAGE_OPTIONS.some((item) => item.code === saved)) {
           setLanguageState(saved as LanguageCode);
         }
@@ -43,7 +43,7 @@ export function I18nProvider({ children }: { children: React.ReactNode }) {
   const setLanguage = async (next: LanguageCode) => {
     setLanguageState(next);
     try {
-      await SecureStore.setItemAsync(STORAGE_KEY, next);
+      await storage.setItemAsync(STORAGE_KEY, next);
     } catch (error) {
       console.warn("Failed to save language:", error);
     }

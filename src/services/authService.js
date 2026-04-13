@@ -1,6 +1,6 @@
 import Constants from "expo-constants";
-import * as SecureStore from "expo-secure-store";
 import { request } from "../api/api";
+import * as storage from "../utils/secureStorage";
 
 export const loginUser = async (register_no) => {
   return await request("user/login", "POST", {
@@ -27,10 +27,10 @@ export const getSession = async () => {
 
 export const clearStoredSession = async () => {
   await Promise.all([
-    SecureStore.deleteItemAsync("authToken"),
-    SecureStore.deleteItemAsync("register_no"),
-    SecureStore.deleteItemAsync("studentId"),
-    SecureStore.deleteItemAsync("subscription"),
+    storage.deleteItemAsync("authToken"),
+    storage.deleteItemAsync("register_no"),
+    storage.deleteItemAsync("studentId"),
+    storage.deleteItemAsync("subscription"),
   ]);
 };
 

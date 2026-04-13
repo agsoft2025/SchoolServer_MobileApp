@@ -1,7 +1,7 @@
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
 import { getBaseUrl } from "../api/apiConfig";
+import * as storage from "../utils/secureStorage";
 
 const API = axios.create({
   baseURL: getBaseUrl(),
@@ -19,7 +19,7 @@ export const createOrder = async (studentId: string, amount: number, subscriptio
 
   try {
     const endpoint = subscription ? "/payment/create" : "/payment/parent/create";
-    const authToken = await SecureStore.getItemAsync("authToken");
+    const authToken = await storage.getItemAsync("authToken");
     const { data } = await API.post(endpoint, {
       studentId,
       amount,
@@ -47,10 +47,10 @@ export const verifyPayment = async (payload: {
 }) => {
   try {
     const url = payload.subscription ? "/payment/verify" : "/payment/parent/verify";
-    const authToken = await SecureStore.getItemAsync("authToken");
+    const authToken = await storage.getItemAsync("authToken");
     const { data } = await API.post(url, {
       ...payload,
-      studentId: await SecureStore.getItemAsync("studentId"),
+      studentId: await storage.getItemAsync("studentId"),
     }, {
       headers: authToken ? { Authorization: `Bearer ${authToken}` } : undefined,
     });

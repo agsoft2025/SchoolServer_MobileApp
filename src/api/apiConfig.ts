@@ -1,5 +1,5 @@
-import * as SecureStore from "expo-secure-store";
 import Toast from "react-native-toast-message";
+import * as storage from "../utils/secureStorage";
 
 let BASE_URL = "https://localhost:5000"; // default fallback
 
@@ -7,7 +7,7 @@ export const getBaseUrl = () => BASE_URL;
 
 export const loadBaseUrl = async () => {
   try {
-    const saved = await SecureStore.getItemAsync("baseUrl");
+    const saved = await storage.getItemAsync("baseUrl");
     if (saved) {
       BASE_URL = saved;
     } else {
@@ -32,7 +32,7 @@ export const loadBaseUrl = async () => {
 export const setBaseUrl = async (url: string) => {
   try {
     BASE_URL = url;
-    await SecureStore.setItemAsync("baseUrl", url);
+    await storage.setItemAsync("baseUrl", url);
   } catch (err) {
     Toast.show({
       type: "error",

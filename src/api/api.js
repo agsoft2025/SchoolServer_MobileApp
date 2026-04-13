@@ -1,6 +1,6 @@
 import axios from "axios";
-import * as SecureStore from "expo-secure-store";
 import { getBaseUrl, loadBaseUrl } from "./apiConfig";
+import * as storage from "../utils/secureStorage";
 
 const api = axios.create({
   timeout: 10000,
@@ -14,7 +14,7 @@ export const request = async (endpoint, method = "GET", data = null, headers = {
   await loadBaseUrl();
   const baseUrl = getBaseUrl().trim();
   const url = `${baseUrl}/${endpoint}`;
-  const authToken = await SecureStore.getItemAsync("authToken");
+  const authToken = await storage.getItemAsync("authToken");
 
   try {
     const res = await api({
