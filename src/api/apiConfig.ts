@@ -3,13 +3,15 @@ import * as storage from "../utils/secureStorage";
 
 let BASE_URL = "https://localhost:5000"; // default fallback
 
+export const normalizeBaseUrl = (url: string) => url.trim().replace(/\/+$/, "");
+
 export const getBaseUrl = () => BASE_URL;
 
 export const loadBaseUrl = async () => {
   try {
     const saved = await storage.getItemAsync("baseUrl");
     if (saved) {
-      BASE_URL = saved;
+      BASE_URL = normalizeBaseUrl(saved);
     } else {
       // Toast.show({
       //   type: "info",
@@ -31,8 +33,9 @@ export const loadBaseUrl = async () => {
 
 export const setBaseUrl = async (url: string) => {
   try {
-    BASE_URL = url;
-    await storage.setItemAsync("baseUrl", url);
+    const normalizedUrl = normalizeBaseUrl(url);
+    BASE_URL = normalizedUrl;
+    await storage.setItemAsync("baseUrl", normalizedUrl);
   } catch (err) {
     Toast.show({
       type: "error",

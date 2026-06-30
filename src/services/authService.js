@@ -1,4 +1,5 @@
 import Constants from "expo-constants";
+import { normalizeBaseUrl } from "../api/apiConfig";
 import { request } from "../api/api";
 import * as storage from "../utils/secureStorage";
 
@@ -42,7 +43,7 @@ export const logoutUser = async () => {
 
 const API_BASE_URL =
   Constants.expoConfig?.extra?.apiUrl || "https://schoolglobalserver-agsoft.onrender.com";
-const LOCATION_API = `${API_BASE_URL}/api/location`;
+const LOCATION_API = `${normalizeBaseUrl(API_BASE_URL)}/api/location`;
 
 export const searchLocation = async (query) => {
   try {

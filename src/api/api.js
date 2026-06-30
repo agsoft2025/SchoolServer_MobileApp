@@ -1,5 +1,5 @@
 import axios from "axios";
-import { getBaseUrl, loadBaseUrl } from "./apiConfig";
+import { getBaseUrl, loadBaseUrl, normalizeBaseUrl } from "./apiConfig";
 import * as storage from "../utils/secureStorage";
 
 const api = axios.create({
@@ -12,7 +12,7 @@ const api = axios.create({
 
 export const request = async (endpoint, method = "GET", data = null, headers = {}) => {
   await loadBaseUrl();
-  const baseUrl = getBaseUrl().trim();
+  const baseUrl = normalizeBaseUrl(getBaseUrl());
   const url = `${baseUrl}/${endpoint}`;
   const authToken = await storage.getItemAsync("authToken");
 
